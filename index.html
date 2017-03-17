@@ -5,40 +5,16 @@
 
 <style>
 
-#container {
-  width: 200px;
-  height: 200px;
-}
-
 #button {
-  width: 40px;
-  height: 40px;
   overflow: hidden;
   border: 1px solid black;
+  margin: 10px;
 }
 
 #spriteSheet {
-  width: calc(40px * 25);
-  height: 40px;
   will-change: transform;
   transform: translateX(0px);
   background-repeat: no-repeat;
-}
-
-#button:hover > #spriteSheet {
-  animation: playForwards 1s linear;
-  transform: translateX(calc(-40px * 24));
-}
-
-@keyframes playForwards {
-  from {
-    transform: translateX(0px);
-    animation-timing-function: frames(25);
-  }
-
-  to {
-    transform: translateX(calc(-40px * 24));
-  }
 }
 
 </style>
@@ -49,78 +25,46 @@
   <div id="spriteSheet"></div>
 </div>
 
-<div id="container"></div>
-
-<div id="outputContainer"></div>
+<textarea id="output" rows="25" cols="100"></textarea>
 
 <script src="bodymovin_light.min.js"></script>
+<script src="makespritesheet.js"></script>
 <script>
 
-fetch('./data.json').then(r => r.json()).then(animationData => {
-  var wrapper = document.querySelector('#container');
-  var output = document.querySelector('#output');
 
-  var svgSwAnim = bodymovin.loadAnimation({
-    wrapper: wrapper,
-    animType: 'svg',
-    loop: true,
-    autoplay: false,
-    prerender: false,
-    animationData: animationData,
+fetch('./data.json').then(r => r.json()).then(animationData => {
+  var outputSize = {
+    width: 50,
+    height: 50
+  };
+  var result = makeSpriteSheet(animationData, {
+    outputSize: outputSize,
+
+    // These crop margins are in the original units, i.e. relative to
+    // animationData.w and animationData.h.
+    cropMargins: {
+      top: 40,
+      right: 40,
+      bottom: 40,
+      left: 40
+    }
   });
 
-  var timePerFrame = 1000 / 60;
+  var button = document.querySelector('#button');
+  var spriteSheet = document.querySelector('#spriteSheet');
+  var output = document.querySelector('#output');
 
-  function adjustHashURL(value, prefix) {
-    if (value.startsWith('url(#')) {
-      var hash = value.substring('url(#'.length, value.length - 1);
-      return 'url(#' + prefix + hash + ')';
-    }
-    return value;
-  }
+  button.style.width = outputSize.width + 'px';
+  button.style.height = outputSize.height + 'px';
+  spriteSheet.style.width = result.spriteSheet.width + 'px';
+  spriteSheet.style.height = result.spriteSheet.height + 'px';
+  spriteSheet.style.backgroundImage = 'url(' + result.spriteSheet.dataURL + ')';
 
-  function makeUnique(node, prefix) {
-    if (node.id) {
-      node.id = prefix + node.id;
-    }
-    if (node.getAttribute('filter')) {
-      node.setAttribute('filter', adjustHashURL(node.getAttribute('filter'), prefix));
-    }
-    if (node.getAttribute('mask')) {
-      node.setAttribute('mask', adjustHashURL(node.getAttribute('mask'), prefix));
-    }
-    if (node.getAttribute('clip-path')) {
-      node.setAttribute('clip-path', adjustHashURL(node.getAttribute('clip-path'), prefix));
-    }
-    for (var i = 0; i < node.childNodes.length; i++) {
-      makeUnique(node.childNodes[i], prefix);
-    }
-  }
+  button.onclick = function () {
+    spriteSheet.animate(result.animationKeyframes, result.animationOptions);
+  };
 
-  var doc = document.implementation.createDocument("", "", null);
-  var output = doc.createElementNS('http://www.w3.org/2000/svg', 'svg');
-  output.setAttribute('width', '1000');
-  output.setAttribute('height', '40');
-  doc.appendChild(output);
-
-  for (var i = 0; i <= 25; i++) {
-    svgSwAnim.goToAndStop(i * timePerFrame, false);
-    // output.innerHTML += wrapper.innerHTML; continue;
-    var svgNode = wrapper.firstElementChild.cloneNode(true);
-    makeUnique(svgNode, i + '_');
-    svgNode.setAttribute('x', i * 40);
-    svgNode.setAttribute('width', 40);
-    svgNode.setAttribute('height', 40);
-    output.appendChild(svgNode);
-  }
-
-  var oSerializer = new XMLSerializer();
-  document.querySelector('#spriteSheet').style.backgroundImage = 'url(data:image/svg+xml;base64,' + btoa(oSerializer.serializeToString(doc)) + ')';
-  console.log(doc);
-  console.log(oSerializer.serializeToString(doc));
-  console.log(btoa(oSerializer.serializeToString(doc)));
-
-  document.querySelector('#outputContainer').appendChild(output.cloneNode(true));
+  output.value = result.spriteSheet.str;
 });
 
 </script>
