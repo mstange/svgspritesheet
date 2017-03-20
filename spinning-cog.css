@@ -1,0 +1,22 @@
+/*
+  generated rules from svg/bodymotion animation
+*/
+.spinning-cog {
+  will-change: transform;
+  transform: translateX(0px);
+  background-repeat: no-repeat;
+  background-image: url('./spinning-cog.svg');
+  height: 50px;
+  width: 1500px;
+}
+.spinning-cog-forwards {
+  animation-name: spinning-cog;
+  animation-direction: normal;
+  animation-duration: 500ms;
+  animation-timing-function: steps(29);
+}
+
+@keyframes spinning-cog {
+  from { transform: translateX(0); }
+  to { transform: translateX(-1450px); }
+}

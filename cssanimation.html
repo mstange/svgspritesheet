@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<meta charset="utf-8">
+<title>Using converted SVG sprite sheet</title>
+
+<style>
+
+#button {
+  overflow: hidden;
+  border: 1px solid black;
+  margin: 10px;
+  width: 50px;
+  height: 50px;
+}
+</style>
+
+<style>
+/* could/should be a %include  */
+@import url('./spinning-cog.css');
+</style>
+
+
+<body>
+<p>Demo uses a pre-generated spritesheet.svg and suggests/explores how we might
+integrate that</p>
+<div id="button">
+  <div id="spriteSheet" class="spinning-cog"></div>
+</div>
+
+<script>
+  var button = document.querySelector('#button');
+  var buttonInner = document.querySelector('#spriteSheet');
+
+  button.onclick = function () {
+    // TODO: need some setTimeout fallback love here in case we miss animationend
+    spriteSheet.addEventListener('animationend', () => {
+      spriteSheet.classList.remove('spinning-cog-forwards');
+    });
+    spriteSheet.classList.add('spinning-cog-forwards');
+  };
+
+</script>
