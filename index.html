@@ -82,11 +82,12 @@ function init(){
 
 function reset() {
   document.getElementById('download').removeAttribute("href");
-  delete document.getElementById('button').onclick;
+  document.getElementById('button').onclick = "";
   document.getElementById("spriteSheet").style.removeProperty('background-image');
 }
 
 function processAnimationData(animationData) {
+  // TODO: where does the output size need to come from?
   var outputSize = {
     width: 50,
     height: 50
