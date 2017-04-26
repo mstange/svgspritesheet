@@ -4,7 +4,6 @@
 <title>Converting JSON to SVG sprite sheet</title>
 
 <style>
-
 #button {
   overflow: hidden;
   border: 1px solid black;
@@ -16,23 +15,78 @@
   transform: translateX(0px);
   background-repeat: no-repeat;
 }
-
+#message {
+  background-color: #f99;
+  margin: 0.5em;
+}
+a#download:not([href]) {
+  visibility: hidden;
+}
 </style>
 
 <body>
 
+<input type="file" id="upload">
 <div id="button">
   <div id="spriteSheet"></div>
 </div>
+<div id="message"></div>
 
-<textarea id="output" rows="25" cols="100"></textarea>
+<a id="download">Download</a>
 
 <script src="bodymovin.js"></script>
 <script src="makespritesheet.js"></script>
 <script>
 
+document.addEventListener("DOMContentLoaded", init);
 
-fetch('./data.json').then(r => r.json()).then(animationData => {
+function warn(msg) {
+  document.getElementById("message").textContent = msg;
+}
+function init(){
+  var uploadNode = document.getElementById("upload");
+  uploadNode.addEventListener("change", function(evt) {
+    reset();
+    var file;
+    var files = uploadNode.files;
+    for (var i = 0, fileCount = files.length; i < fileCount; i++) {
+      if (files[i].type === "application/json") {
+        file = files[i];
+        break;
+      }
+    }
+    if (file) {
+      console.log("getting file: ", file)
+      var reader = new FileReader();
+      var animationData;
+      reader.onload = function(evt) {
+        try {
+          animationData = JSON.parse(evt.target.result);
+        } catch (e) {
+          warn("Failed to parse file contents");
+        }
+        if (animationData) {
+          processAnimationData(animationData);
+        }
+      };
+      reader.error = function(evt) {
+        warn("Error reading file: " + evt.target.error);
+      };
+      reader.readAsText(file);
+    }
+    else {
+      warn("No application/json file provided");
+    }
+  });
+};
+
+function reset() {
+  document.getElementById('download').removeAttribute("href");
+  delete document.getElementById('button').onclick;
+  document.getElementById("spriteSheet").style.removeProperty('background-image');
+}
+
+function processAnimationData(animationData) {
   var outputSize = {
     width: 50,
     height: 50
@@ -50,21 +104,21 @@ fetch('./data.json').then(r => r.json()).then(animationData => {
     }
   });
 
-  var button = document.querySelector('#button');
-  var spriteSheet = document.querySelector('#spriteSheet');
-  var output = document.querySelector('#output');
+  var button = document.querySelector("#button");
+  var downloadLink = document.querySelector("#download");
+  var spriteSheet = document.querySelector("#spriteSheet");
 
-  button.style.width = outputSize.width + 'px';
-  button.style.height = outputSize.height + 'px';
-  spriteSheet.style.width = result.spriteSheet.width + 'px';
-  spriteSheet.style.height = result.spriteSheet.height + 'px';
-  spriteSheet.style.backgroundImage = 'url(' + result.spriteSheet.dataURL + ')';
+  button.style.width = outputSize.width + "px";
+  button.style.height = outputSize.height + "px";
+  spriteSheet.style.width = result.spriteSheet.width + "px";
+  spriteSheet.style.height = result.spriteSheet.height + "px";
+  spriteSheet.style.backgroundImage = "url(" + result.spriteSheet.dataURL + ")";
 
   button.onclick = function () {
     spriteSheet.animate(result.animationKeyframes, result.animationOptions);
   };
 
-  output.value = result.spriteSheet.str;
-});
+  downloadLink.href = "data:image/svg+xml," + encodeURIComponent(result.spriteSheet.str);
+}
 
 </script>
