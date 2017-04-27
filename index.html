@@ -116,6 +116,7 @@ function processAnimationData(animationData) {
   spriteSheet.style.backgroundImage = "url(" + result.spriteSheet.dataURL + ")";
 
   button.onclick = function () {
+    console.log('onclick, animating with: ', result.animationKeyframes, result.animationOptions);
     spriteSheet.animate(result.animationKeyframes, result.animationOptions);
   };
 

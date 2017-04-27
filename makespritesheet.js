@@ -1,4 +1,5 @@
 function makeSpriteSheet(animationData, options) {
+  console.log('makeSpriteSheet with: ', animationData, options);
   var outputSize = options.outputSize;
   var cropMargins = options.cropMargins || {};
 
@@ -28,7 +29,8 @@ function makeSpriteSheet(animationData, options) {
     animationData: animationData,
   });
 
-  var frameCount = Math.min(30, anim.totalFrames);
+  var frameCount = Math.max(30, anim.totalFrames);
+  console.log('frameCount: ', anim.totalFrames);
   var frameRate = anim.frameRate;
 
   function adjustHashURL(value, prefix) {
