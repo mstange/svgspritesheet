@@ -4,46 +4,163 @@
 <title>Converting JSON to SVG sprite sheet</title>
 
 <style>
-#button {
-  overflow: hidden;
-  border: 1px solid black;
-  margin: 10px;
-}
+  body {
+    font-family: "Open Sans",arial,sans-serif;
+  }
 
-#spriteSheet {
-  will-change: transform;
-  transform: translateX(0px);
-  background-repeat: no-repeat;
-}
-#message {
-  background-color: #f99;
-  margin: 0.5em;
-}
-a#download:not([href]) {
-  visibility: hidden;
-}
+  h1 {
+    font-size: 0.9em;
+    margin: 0.1rem 0 0.5rem 0;
+  }
+
+  h2 {
+    font-size: 0.9em;
+    font-weight: normal;
+    margin: 0.1rem 0 0.5rem 0;
+  }
+
+  #button {
+    overflow: hidden;
+    margin: 10px;
+  }
+  .hasData #button {
+    border: 1px solid black;
+  }
+
+  #spriteSheet {
+    will-change: transform;
+    transform: translateX(0px);
+    background-repeat: no-repeat;
+  }
+
+  #message {
+    background-color: #f99;
+    margin: 0.5em;
+  }
+
+  a#download:not([href]) {
+    visibility: hidden;
+  }
+
+  section.phase {
+    padding: 0.5rem;
+    border: 1px dotted #ccc;
+    border-radius: 8px;
+    margin: 0.7rem;
+  }
+
+  #convert:not(.hasData) {
+    opacity: 0.2;
+  }
+  #results:not(.hasData) {
+    opacity: 0.2;
+  }
+
+  section.params {
+    padding: 0.5rem;
+    margin: 0.7rem;
+  }
+  .params label {
+    font-size: 0.8em;
+  }
+  .params input {
+    width: 4em;
+    margin: 0.4rem;
+  }
+  #cropTop, #cropBottom {
+    display: block;
+    margin: 0.4rem auto;
+  }
+  #cropLeft, #cropRight {
+    display: inline-block;
+  }
+  #cropMargins > .grid {
+    display: grid;
+    grid-template-columns: 6rem 6rem 6rem;
+    grid-auto-rows: 3rem;
+  }
+  #cropMargins > .grid > label:nth-child(1),
+  #cropMargins > .grid > label:nth-child(4) {
+    grid-column-start: 1;
+    grid-column-end: 4;
+    align-self: stretch;
+    text-align: center;
+
+  }
+  #cropMargins > .grid > label:nth-child(2) {
+    align-self: stretch;
+    text-align: left;
+  }
+  #cropMargins > .grid > label:nth-child(3) {
+    grid-column-start: 3;
+    align-self: stretch;
+    text-align: right;
+  }
+
+
+
 </style>
 
 <body>
 
-<input type="file" id="upload">
-<div id="button">
-  <div id="spriteSheet"></div>
-</div>
+<section class="phase">
+  <h1>Select File</h1>
+  <input type="file" id="upload">
+</section>
+
 <div id="message"></div>
 
-<a id="download">Download</a>
+<section id="convert" class="phase">
+  <h1>Configure &amp; Convert</h1>
+  <section id="cropMargins" class="params">
+    <h2>Crop Margins</h2>
+    <section class="grid">
+      <label for="cropTop">top<input type="text" value="0" id="cropTop"></label>
+      <label for="cropLeft">left<input type="text" value="0" id="cropLeft"></label>
+      <label for="cropRight">right<input type="text" value="0" id="cropRight"></label>
+      <label for="cropBottom">bottom<input type="text" value="0" id="cropBottom"></label>
+    </section>
+  </section>
+  <section id="outputSize" class="params">
+    <h2>Output Dimensions</h2>
+    <section class="grid">
+      <label for="outputWidth">width<input type="text" id="outputWidth"></label>
+      <label for="outputHeight">height<input type="text" id="outputHeight"></label>
+    </section>
+  </section>
+  <p><button disabled="" id="makeit">Create spritesheet</button></p>
+</section>
+
+<section id="results" class="phase">
+  <h1>Output</h1>
+  <div id="button">
+    <div id="spriteSheet"></div>
+  </div>
+  <a id="download">Download</a>
+</section>
 
 <script src="bodymovin.js"></script>
 <script src="makespritesheet.js"></script>
 <script>
+'use strict';
+var gAnimationData;
 
 document.addEventListener("DOMContentLoaded", init);
 
 function warn(msg) {
   document.getElementById("message").textContent = msg;
 }
+
 function init(){
+  reset();
+  var makeitBtn = document.getElementById("makeit");
+  makeitBtn.addEventListener('click', function(evt) {
+    if (gAnimationData) {
+      var dimensions = getOutputAndCropDimensions();
+      processAnimationData(gAnimationData, dimensions);
+    }
+  });
+
   var uploadNode = document.getElementById("upload");
   uploadNode.addEventListener("change", function(evt) {
     reset();
@@ -59,19 +176,23 @@ function init(){
       console.log("getting file: ", file)
       var reader = new FileReader();
       var animationData;
-      reader.onload = function(evt) {
+      reader.addEventListener('load', function(evt) {
         try {
           animationData = JSON.parse(evt.target.result);
         } catch (e) {
           warn("Failed to parse file contents");
         }
         if (animationData) {
-          processAnimationData(animationData);
+          gAnimationData = animationData;
+          makeitBtn.removeAttribute("disabled");
+          document.getElementById('convert').classList.add('hasData');
+          document.getElementById('outputHeight').value = animationData.h;
+          document.getElementById('outputWidth').value = animationData.w;
         }
-      };
-      reader.error = function(evt) {
+      });
+      reader.addEventListener('error', function(evt) {
         warn("Error reading file: " + evt.target.error);
-      };
+      });
       reader.readAsText(file);
     }
     else {
@@ -81,28 +202,41 @@ function init(){
 };
 
 function reset() {
-  document.getElementById('download').removeAttribute("href");
-  document.getElementById('button').onclick = "";
-  document.getElementById("spriteSheet").style.removeProperty('background-image');
+  document.getElementById("download").removeAttribute("href");
+  document.getElementById("button").onclick = "";
+  document.getElementById("spriteSheet").style.removeProperty("background-image");
+  gAnimationData = null;
+  document.getElementById("convert").classList.remove("hasData");
+  document.getElementById("results").classList.remove("hasData");
+  ["cropTop", "cropRight", "cropBottom", "cropLeft", "outputWidth", "outputHeight"].forEach(function(name) {
+    document.getElementById(name).value = 0;
+  });
 }
 
-function processAnimationData(animationData) {
-  // TODO: where does the output size need to come from?
-  var outputSize = {
-    width: 50,
-    height: 50
+function getOutputAndCropDimensions(animationData) {
+  var dims = {
+    outputSize: {},
+    cropMargins: {}
   };
+  ["cropTop", "cropRight", "cropBottom", "cropLeft"]
+  .forEach(function(name) {
+    var val = parseFloat(document.getElementById(name).value);
+    dims.cropMargins[name.toLowerCase().replace(/^crop/, "")] = val;
+  });
+  ["outputWidth", "outputHeight"]
+  .forEach(function(name) {
+    var val = parseFloat(document.getElementById(name).value);
+    dims.outputSize[name.toLowerCase().replace(/^output/, '')] = val;
+  });
+  return dims;
+}
+
+function processAnimationData(animationData, dimensions) {
+  var outputSize = dimensions.outputSize;
+  var cropMargins = dimensions.cropMargins;
   var result = makeSpriteSheet(animationData, {
     outputSize: outputSize,
-
-    // These crop margins are in the original units, i.e. relative to
-    // animationData.w and animationData.h.
-    cropMargins: {
-      top: 40,
-      right: 40,
-      bottom: 40,
-      left: 40
-    }
+    cropMargins: cropMargins
   });
 
   var button = document.querySelector("#button");
@@ -121,6 +255,8 @@ function processAnimationData(animationData) {
   };
 
   downloadLink.href = "data:image/svg+xml," + encodeURIComponent(result.spriteSheet.str);
+
+  document.getElementById("results").classList.add('hasData');
 }
 
 </script>

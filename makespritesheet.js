@@ -18,6 +18,9 @@ function makeSpriteSheet(animationData, options) {
     x: -(cropMargins.left || 0) * scaleX,
     y: -(cropMargins.top || 0) * scaleY,
   };
+  console.log('croppedWidth: %s, croppedHeight: %s', croppedWidth, croppedHeight);
+  console.log('scaleX: %s, scaleY: %s', scaleX, scaleY);
+  console.log('uncroppedOutputSize: %o, outputCropOffset: %o', uncroppedOutputSize, outputCropOffset);
 
   var wrapper = document.createElement('div');
   var anim = bodymovin.loadAnimation({
