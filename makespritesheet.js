@@ -15,14 +15,18 @@ function makeSpriteSheet(animationData, options) {
     height: height * scaleY
   };
   var outputCropOffset = {
-    x: -(cropMargins.left || 0) * scaleX,
-    y: -(cropMargins.top || 0) * scaleY,
+    x: cropMargins.left ? -(cropMargins.left || 0) * scaleX : 0,
+    y: cropMargins.top ? -(cropMargins.top || 0) * scaleY : 0,
   };
   console.log('croppedWidth: %s, croppedHeight: %s', croppedWidth, croppedHeight);
   console.log('scaleX: %s, scaleY: %s', scaleX, scaleY);
   console.log('uncroppedOutputSize: %o, outputCropOffset: %o', uncroppedOutputSize, outputCropOffset);
 
-  var wrapper = document.createElement('div');
+  // var wrapper = document.createElement('div');
+  var wrapper = document.getElementById('wrapper');
+  while(wrapper.firstElementChild) {
+    wrapper.removeChild(wrapper.firstElementChild);
+  }
   var anim = bodymovin.loadAnimation({
     wrapper: wrapper,
     animType: 'svg',
@@ -32,7 +36,7 @@ function makeSpriteSheet(animationData, options) {
     animationData: animationData,
   });
 
-  var frameCount = Math.max(30, anim.totalFrames);
+  var frameCount = anim.totalFrames;
   console.log('frameCount: ', anim.totalFrames);
   var frameRate = anim.frameRate;
 
