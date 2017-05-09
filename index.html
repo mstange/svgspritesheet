@@ -11,6 +11,8 @@
   h1 {
     font-size: 0.9em;
     margin: 0.1rem 0 0.5rem 0;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid #ccc;
   }
 
   h2 {
@@ -21,7 +23,6 @@
 
   #button {
     overflow: hidden;
-    margin: 10px;
   }
   .hasData #button {
     border: 1px solid black;
@@ -38,6 +39,15 @@
     margin: 0.5em;
   }
 
+  #stage {
+    padding: 10px;
+    background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAwAAAAMCAYAAABWdVznAAAAH0lEQVQokWO4ffv2f2x427ZtWDHDiNSASwKXQSNSAwBAZ+HYMh16NQAAAABJRU5ErkJggg==');
+  }
+
+  a#download {
+    display: block;
+    padding: 5px;
+  }
   a#download:not([href]) {
     visibility: hidden;
   }
@@ -57,8 +67,8 @@
   }
 
   section.params {
-    padding: 0.5rem;
-    margin: 0.7rem;
+    padding: 0.5rem 0;
+    margin: 0.7rem 0;
   }
   .params label {
     font-size: 0.8em;
@@ -134,10 +144,13 @@
 <section id="results" class="phase">
   <h1>Output</h1>
   <div id="wrapper"></div>
-  <div id="button">
-    <div id="spriteSheet"></div>
+  <h2>Preview (click to play)</h2>
+  <div id="stage">
+    <div id="button">
+      <div id="spriteSheet"></div>
+    </div>
   </div>
-  <a id="download">Download</a>
+  <h2><a id="download">Download</a></h2>
 </section>
 
 <script src="bodymovin.js"></script>

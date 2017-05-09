@@ -82,6 +82,7 @@ function makeSpriteSheet(animationData, options) {
     svgNode.setAttribute('height', uncroppedOutputSize.height);
     output.appendChild(svgNode);
   }
+  wrapper.style.display = 'none';
 
   var serializer = new XMLSerializer();
   var str = serializer.serializeToString(doc);
