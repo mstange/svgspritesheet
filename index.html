@@ -52,6 +52,11 @@
     visibility: hidden;
   }
 
+  #snippet {
+    width: 100%;
+    height: 5em;
+  }
+
   section.phase {
     padding: 0.5rem;
     border: 1px dotted #ccc;
@@ -150,7 +155,10 @@
       <div id="spriteSheet"></div>
     </div>
   </div>
-  <h2><a id="download">Download</a></h2>
+  <h2><a id="download">Download SVG</a></h2>
+
+  <h2>Snippet</h2>
+  <textarea id="snippet"></textarea>
 </section>
 
 <script src="bodymovin.js"></script>
@@ -256,6 +264,7 @@ function processAnimationData(animationData, dimensions) {
   var button = document.querySelector("#button");
   var downloadLink = document.querySelector("#download");
   var spriteSheet = document.querySelector("#spriteSheet");
+  var snipper = document.querySelector("#snippet");
 
   button.style.width = outputSize.width + "px";
   button.style.height = outputSize.height + "px";
@@ -263,10 +272,16 @@ function processAnimationData(animationData, dimensions) {
   spriteSheet.style.height = result.spriteSheet.height + "px";
   spriteSheet.style.backgroundImage = "url(" + result.spriteSheet.dataURL + ")";
 
+  snippet.textContent = `someElement.animate(
+    ${JSON.stringify(result.animationKeyframes)},
+    ${JSON.stringify(result.animationOptions)}
+  )`;
+
   button.onclick = function () {
     console.log('onclick, animating with: ', result.animationKeyframes, result.animationOptions);
     spriteSheet.animate(result.animationKeyframes, result.animationOptions);
   };
+
 
   downloadLink.href = "data:image/svg+xml," + encodeURIComponent(result.spriteSheet.str);
 
