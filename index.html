@@ -38,6 +38,10 @@
     background-color: #f99;
     margin: 0.5em;
   }
+  #message > p {
+    margin: 0 0 0.5em;
+    padding: 0.5em;
+  }
 
   #stage {
     padding: 10px;
@@ -169,8 +173,17 @@ var gAnimationData;
 
 document.addEventListener("DOMContentLoaded", init);
 
-function warn(msg) {
-  document.getElementById("message").textContent = msg;
+function warn(arg /*, arg1, arg2... */) {
+  var container = document.getElementById("message");
+  while (container.firstChild) {
+    container.removeChild(container.firstChild);
+  }
+  for(let msg of arguments) {
+    let txt = document.createTextNode(msg);
+    let p = document.createElement('p');
+    p.appendChild(txt);
+    container.appendChild(p);
+  }
 }
 
 function init(){
@@ -285,6 +298,20 @@ function processAnimationData(animationData, dimensions) {
 
   downloadLink.href = "data:image/svg+xml," + encodeURIComponent(result.spriteSheet.str);
 
+  var screenRecommendedMax = {
+    width: 1024,
+    height: 768,
+    ratioX: 1.25, // corresponds to layout.animation.prerender.viewport-ratio-limit-x
+    ratioY: 1.25 // layout.animation.prerender.viewport-ratio-limit-y
+  };
+  var maxWidth = screenRecommendedMax.width * screenRecommendedMax.ratioX;
+  var maxHeight = screenRecommendedMax.height * screenRecommendedMax.ratioY;
+  if ((maxWidth < result.spriteSheet.width) ||
+      (maxHeight < result.spriteSheet.height)) {
+    warn(`Sprite sheet may be too large (${result.spriteSheet.width}x${result.spriteSheet.height}) to run on the compositor`,
+        `Recommend max is ${maxWidth}px wide (${screenRecommendedMax.width} x ${screenRecommendedMax.ratioX})
+        by ${maxHeight}px (${screenRecommendedMax.height} x ${screenRecommendedMax.ratioY})`);
+  }
   document.getElementById("results").classList.add('hasData');
 }
 
