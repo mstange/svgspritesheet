@@ -58,7 +58,7 @@
 
   #snippet {
     width: 100%;
-    height: 5em;
+    height: 10em;
   }
 
   section.phase {
@@ -285,10 +285,23 @@ function processAnimationData(animationData, dimensions) {
   spriteSheet.style.height = result.spriteSheet.height + "px";
   spriteSheet.style.backgroundImage = "url(" + result.spriteSheet.dataURL + ")";
 
-  snippet.textContent = `someElement.animate(
-    ${JSON.stringify(result.animationKeyframes)},
-    ${JSON.stringify(result.animationOptions)}
-  )`;
+  snippet.textContent = `
+// the CSS
+#theContainer {
+  width: ${outputSize.width}px;
+  height: ${outputSize.height}px;
+  overflow: hidden;
+}
+#theImage {
+  min-width: ${result.spriteSheet.width}px;
+  min-height: ${result.spriteSheet.height}px;
+  background: url('./path/to/spritesheet.svg') no-repeat;
+}
+// the JS
+someElement.animate(
+  ${JSON.stringify(result.animationKeyframes)},
+  ${JSON.stringify(result.animationOptions)}
+)`;
 
   button.onclick = function () {
     console.log('onclick, animating with: ', result.animationKeyframes, result.animationOptions);
@@ -301,16 +314,15 @@ function processAnimationData(animationData, dimensions) {
   var screenRecommendedMax = {
     width: 1024,
     height: 768,
-    ratioX: 1.25, // corresponds to layout.animation.prerender.viewport-ratio-limit-x
-    ratioY: 1.25 // layout.animation.prerender.viewport-ratio-limit-y
+    scaleRatio: 1.25, // corresponds to layout.animation.prerender.viewport-ratio-limit-x/y
   };
-  var maxWidth = screenRecommendedMax.width * screenRecommendedMax.ratioX;
-  var maxHeight = screenRecommendedMax.height * screenRecommendedMax.ratioY;
-  if ((maxWidth < result.spriteSheet.width) ||
-      (maxHeight < result.spriteSheet.height)) {
-    warn(`Sprite sheet may be too large (${result.spriteSheet.width}x${result.spriteSheet.height}) to run on the compositor`,
-        `Recommend max is ${maxWidth}px wide (${screenRecommendedMax.width} x ${screenRecommendedMax.ratioX})
-        by ${maxHeight}px (${screenRecommendedMax.height} x ${screenRecommendedMax.ratioY})`);
+  var maxArea = screenRecommendedMax.width *
+                screenRecommendedMax.width.height *
+                screenRecommendedMax.scaleRatio;
+  var imageArea = result.spriteSheet.width * result.spriteSheet.width;
+  if (maxArea < (result.spriteSheet.width * result.spriteSheet.width)) {
+    warn(`Sprite sheet may be too large (${imageArea}px in area) to run on the compositor`,
+        `Recommend max is a total area of less then ${maxArea}px`);
   }
   document.getElementById("results").classList.add('hasData');
 }
