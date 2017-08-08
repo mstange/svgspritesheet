@@ -1,0 +1,78 @@
+<!doctype>
+<html>
+<head>
+<style href="preview.css">
+  #output, #input {
+    background: #eee;
+    padding: 10px;
+    outline: 1px dotted #999;
+    margin: 5px;
+    display: block;
+  }
+  #preview-fill, #preview-stroke {
+    display: inline-block;
+    height: 16px;
+    width: 24px;
+  }
+  #preview-outer {
+    overflow: hidden;
+  }
+  #preview-inner {
+    background-repeat: no-repeat;
+    animation-timing-function: steps(10);
+    animation-name: svg-filmstrip;
+    animation-duration: 0.167s;
+    animation-iteration-count: infinite;
+  }
+  @keyframes svg-filmstrip {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(-216px);
+    }
+  }
+
+</style>
+</head>
+<body>
+<h2>Input</h2>
+<section id="input">
+  <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0NTYiIGhlaWdodD0iMjQiPjxzdmcgd2lkdGg9IjI0IiBoZWlnaHQ9IjI0Ij48cGF0aCBmaWxsPSJjb250ZXh0LWZpbGwiIHN0cm9rZT0iY29udGV4dC1zdHJva2UiIGQ9Ik0wIDEwaDI0djRoLTI0eiIvPjwvc3ZnPjxzdmcgd2lkdGg9IjI0IiBoZWlnaHQ9IjI0IiB4PSIyNCI+PHBhdGggZmlsbD0iY29udGV4dC1maWxsIiBzdHJva2U9ImNvbnRleHQtc3Ryb2tlIiBkPSJNMiAxMGgyMHY0aC0yMHoiLz48L3N2Zz48c3ZnIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgeD0iNDgiPjxwYXRoIGZpbGw9ImNvbnRleHQtZmlsbCIgc3Ryb2tlPSJjb250ZXh0LXN0cm9rZSIgZD0iTTQgMTBoMTZ2NGgtMTZ6Ii8+PC9zdmc+PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHg9IjcyIj48cGF0aCBmaWxsPSJjb250ZXh0LWZpbGwiIHN0cm9rZT0iY29udGV4dC1zdHJva2UiIGQ9Ik02IDEwaDEydjRoLTEyeiIvPjwvc3ZnPjxzdmcgd2lkdGg9IjI0IiBoZWlnaHQ9IjI0IiB4PSIxMjAiPjxwYXRoIGZpbGw9ImNvbnRleHQtZmlsbCIgc3Ryb2tlPSJjb250ZXh0LXN0cm9rZSIgZD0iTTggMTBoOHY0aC04eiIvPjwvc3ZnPjxzdmcgd2lkdGg9IjI0IiBoZWlnaHQ9IjI0IiB4PSIxNDQiPjxwYXRoIGZpbGw9ImNvbnRleHQtZmlsbCIgc3Ryb2tlPSJjb250ZXh0LXN0cm9rZSIgZD0iTTEwIDEwaDR2NGgtNHoiLz48L3N2Zz48c3ZnIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgeD0iMTY4Ij48cGF0aCBmaWxsPSJjb250ZXh0LWZpbGwiIHN0cm9rZT0iY29udGV4dC1zdHJva2UiIGQ9Ik0xMCA4aDR2OGgtNHoiLz48L3N2Zz48c3ZnIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgeD0iMTkyIj48cGF0aCBmaWxsPSJjb250ZXh0LWZpbGwiIHN0cm9rZT0iY29udGV4dC1zdHJva2UiIGQ9Ik0xMCA2aDR2MTJoLTR6Ii8+PC9zdmc+PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHg9IjIxNiI+PHBhdGggZmlsbD0iY29udGV4dC1maWxsIiBzdHJva2U9ImNvbnRleHQtc3Ryb2tlIiBkPSJNMTAgNGg0djE2aC00eiIvPjwvc3ZnPjxzdmcgd2lkdGg9IjI0IiBoZWlnaHQ9IjI0IiB4PSIyNDAiPjxwYXRoIGZpbGw9ImNvbnRleHQtZmlsbCIgc3Ryb2tlPSJjb250ZXh0LXN0cm9rZSIgZD0iTTEwIDJoNHYyMGgtNHoiLz48L3N2Zz48c3ZnIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgeD0iMjY0Ij48cGF0aCBmaWxsPSJjb250ZXh0LWZpbGwiIHN0cm9rZT0iY29udGV4dC1zdHJva2UiIGQ9Ik0xMCA0aDR2MTZoLTR6Ii8+PC9zdmc+PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHg9IjI4OCI+PHBhdGggZmlsbD0iY29udGV4dC1maWxsIiBzdHJva2U9ImNvbnRleHQtc3Ryb2tlIiBkPSJNMTAgNmg0djEyaC00eiIvPjwvc3ZnPjxzdmcgd2lkdGg9IjI0IiBoZWlnaHQ9IjI0IiB4PSIzMTIiPjxwYXRoIGZpbGw9ImNvbnRleHQtZmlsbCIgc3Ryb2tlPSJjb250ZXh0LXN0cm9rZSIgZD0iTTEwIDhoNHY4aC00eiIvPjwvc3ZnPjxzdmcgd2lkdGg9IjI0IiBoZWlnaHQ9IjI0IiB4PSIzMzYiPjxwYXRoIGZpbGw9ImNvbnRleHQtZmlsbCIgc3Ryb2tlPSJjb250ZXh0LXN0cm9rZSIgZD0iTTEwIDEwaDR2NGgtNHoiLz48L3N2Zz48c3ZnIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgeD0iMzYwIj48cGF0aCBmaWxsPSJjb250ZXh0LWZpbGwiIHN0cm9rZT0iY29udGV4dC1zdHJva2UiIGQ9Ik04IDEwaDh2NGgtOHoiLz48L3N2Zz48c3ZnIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgeD0iMzg0Ij48cGF0aCBmaWxsPSJjb250ZXh0LWZpbGwiIHN0cm9rZT0iY29udGV4dC1zdHJva2UiIGQ9Ik02IDEwaDEydjRoLTEyeiIvPjwvc3ZnPjxzdmcgd2lkdGg9IjI0IiBoZWlnaHQ9IjI0IiB4PSI0MDgiPjxwYXRoIGZpbGw9ImNvbnRleHQtZmlsbCIgc3Ryb2tlPSJjb250ZXh0LXN0cm9rZSIgZD0iTTQgMTBoMTZ2NGgtMTZ6Ii8+PC9zdmc+PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHg9IjQzMiI+PHBhdGggZmlsbD0iY29udGV4dC1maWxsIiBzdHJva2U9ImNvbnRleHQtc3Ryb2tlIiBkPSJNMiAxMGgyMHY0aC0yMHoiLz48L3N2Zz48L3N2Zz4K">
+</section>
+
+<section id="config">
+<h3>Substitutes</h3>
+  <p><label>Fill colors: <input type="text" id="fillColors" value="context-fill"></label>
+     <label>Found: <span id="fill-colors-found"></span></label></p>
+  <p><label>Stroke colors: <input type="text" id="strokeColors" value="context-stroke"></label>
+     <label>Found: <span id="stroke-colors-found"></span></label>
+  </p>
+  <button onclick="render()">Re-render</button>
+
+<h3>Preview colors</h3>
+  <p>fill: <span id="preview-fill"></span></p>
+  <p>stroke: <span id="preview-stroke"></span></p>
+</section>
+
+<h2>Output</h2>
+<section id="output"></section>
+
+<h2>Preview</h2>
+<section id="preview">
+  <div id="preview-outer">
+    <div id="preview-inner"></div>
+  </div>
+</section>
+
+<h3>Examples</h3>
+<ul>
+  <li><a href="?src=https://hg.mozilla.org/mozilla-central/raw-file/tip/browser/themes/shared/icons/library-bookmark-animation.svg">library-bookmark-animation.svg</a></li>
+  <li><a href="?src=https://hg.mozilla.org/mozilla-central/raw-file/tip/browser/themes/shared/icons/bookmark-animation.svg">bookmark-animation.svg</a></li>
+  <li><a href="?src=https://hg.mozilla.org/mozilla-central/raw-file/tip/browser/themes/shared/icons/chevron-animation.svg">chevron-animation.svg</a></li>
+  <li><a href="?src=https://hg.mozilla.org/mozilla-central/raw-file/tip/browser/themes/shared/downloads/notification-start-animation.svg">notification-start-animation.svg</a></li>
+</ul>
+
+<script src="./preview.js" defer></script>
+</body>
+</html>
