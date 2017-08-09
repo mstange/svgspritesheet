@@ -21,6 +21,7 @@ async function main() {
 
   update(gInputDocument);
   document.body.addEventListener("click", ui);
+  document.body.addEventListener("change", ui);
 }
 
 function update() {
@@ -34,27 +35,50 @@ function update() {
 let ui = {
   handleEvent(evt) {
     let target = evt.target;
-    // handle assignment checkbox clicks
-    if (target.type == "checkbox" && target.name.endsWith("-assignment")) {
-      let siblings = Array.from(target.parentNode.querySelectorAll("[type='checkbox']"))
-                      .filter(input => input !== target);
-      if (target.name == "none-assignment") {
-        // deselect the others
-        if (target.checked) {
-          siblings.forEach(input => {
-            input.checked = false;
-          });
+    switch (evt.type) {
+      case "click":
+        // handle assignment checkbox clicks
+        if (target.type == "checkbox" && target.name.endsWith("-assignment")) {
+          return this.handleAssignmentCheckboxClick(target, evt);
         }
-      } else {
+        break;
+      case "change":
+        if (target.type == "color" && (/(fill|stroke)Color/).test(target.id)) {
+          return this.handlePreviewColorChange(target, evt);
+        }
+        break;
+    }
+  },
+  handleAssignmentCheckboxClick(target, evt) {
+    let siblings = Array.from(target.parentNode.querySelectorAll("[type='checkbox']"))
+                    .filter(input => input !== target);
+    if (target.name == "none-assignment") {
+      // deselect the others
+      if (target.checked) {
         siblings.forEach(input => {
-          if (input.name == "none-assignment") {
-            input.checked = false;
-          }
+          input.checked = false;
         });
       }
+    } else {
+      siblings.forEach(input => {
+        if (input.name == "none-assignment") {
+          input.checked = false;
+        }
+      });
+    }
+  },
+  handlePreviewColorChange(target, evt) {
+    switch (target.id) {
+      case "fillColor":
+        substituteColors.set("context-fill", target.value);
+        break;
+      case "strokeColor":
+        substituteColors.set("context-stroke", target.value);
+        break;
     }
   }
 }
+
 main();
 
 function getElementsWithAttribute(rootElement) {
@@ -153,7 +177,7 @@ function colorAssignmentView(color) {
   let swatch = colorSwatchView(color);
   let fillChecked =  color == "context-fill" ? "checked" : "";
   let strokeChecked =  color == "context-stroke" ? "checked" : "";
-  let noneChecked = !(fillChecked || strokeChecked);
+  let noneChecked = !(fillChecked || strokeChecked) ?  "checked" : "";
 
   return `<div class="color-assignment">
     ${swatch}
