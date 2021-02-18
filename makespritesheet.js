@@ -52,7 +52,7 @@ function makeSpriteSheet(animationData, options) {
     if (node.id) {
       node.id = prefix + node.id;
     }
-    for (const attribute of ['filter', 'mask', 'clip-path']) {
+    for (const attribute of ['filter', 'mask', 'clip-path', 'fill', 'stroke']) {
       const value = node.getAttribute(attribute);
       if (value) {
         node.setAttribute(attribute, adjustHashURL(value, prefix));
